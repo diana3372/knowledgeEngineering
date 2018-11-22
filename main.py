@@ -8,10 +8,12 @@ class Disorder:
         self.name = name
         self.id = id
         
-    def build_symptoms_dict(self, symptoms):
+    def build_symptoms_dict(self, symptoms, symptoms_ids):
         self.symptoms_dict = {}
-        for s, v in symptoms.iteritems():
-            self.symptoms_dict.add(s, v)
+        for s_id, item in enumerate(symptoms.iteritems()):
+            s, v = item
+            assert s == symptoms_ids[s_id], 'Wrong mapping symptom to id'
+            self.symptoms_dict[s_id] = v
     
 
 class Symptom:
@@ -40,15 +42,17 @@ disorders_symptoms_df = pd.read_csv(disorders_symptoms_file)
 # Filter out columns with unnamed headers
 disorders_symptoms_df = disorders_symptoms_df.loc[:, ~disorders_symptoms_df.columns.str.contains('^Unnamed')]
 
+disorders = []
 disorder_count = 0
 for row in disorders_symptoms_df.iterrows():
     row_data = row[1]
     disorder_name = row_data[0]
     symptoms = row_data[1:]
     disorder = Disorder(disorder_name, disorder_count)
-    disorder.build_symptoms_dict(symptoms)
-#    disorder.symptoms_dict[]
-    break
+    disorder.build_symptoms_dict(symptoms, symptoms_ids)
+    disorders.append(disorder)
+    
+
 
 
 
