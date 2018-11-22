@@ -16,15 +16,16 @@ class Disorder:
             self.symptoms_dict[s_id] = v
     
 
-class Symptom:
-    def __init__(self, name, id):
-        self.name = name
-        self.id = id
+#class Symptom:
+#    def __init__(self, name, id):
+#        self.name = name
+#        self.id = id
 
 
 kb_folder = 'knowledge_base'
 symptoms_ids_file = '{}/symptoms_to_id.csv'.format(kb_folder)
 disorders_symptoms_file = '{}/disorders_symptoms.csv'.format(kb_folder)
+symptoms_questions_file = '{}/symptoms_to_questions.csv'.format(kb_folder)
 
 # Load symptoms ids
 symptoms_ids_df = pd.read_csv(symptoms_ids_file, header=None)
@@ -34,7 +35,6 @@ for row in symptoms_ids_df.iterrows():
     name = row_data[0]
     id = row_data[1]
     symptoms_ids[id] = name
-
 
 
 # Read data
@@ -51,8 +51,15 @@ for row in disorders_symptoms_df.iterrows():
     disorder = Disorder(disorder_name, disorder_count)
     disorder.build_symptoms_dict(symptoms, symptoms_ids)
     disorders.append(disorder)
+    disorder_count += 1
     
-
+disorder_key = 2
+disorder = disorders[disorder_key]
+print(disorder.name)
+print(disorder.id)
+symptom_key = 1
+print(symptoms_ids[symptom_key])
+print(disorder.symptoms_dict[symptom_key])
 
 
 
