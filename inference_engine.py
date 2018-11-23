@@ -3,7 +3,7 @@
 
 class Prune_classifier:
     def __init__(self, all_disorders):
-        self.candidate_disorders = all_disorders
+        self.candidate_disorders = all_disorders.copy()
         self.symptoms_so_far = []
         
     def execute(self, symptom_id, severity):
