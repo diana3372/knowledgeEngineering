@@ -31,12 +31,12 @@ class Prune_classifier:
                 
                 # Discard this candidate disorder
                 self.candidate_disorders.remove(candidate)
-                print('Ruling out {} because symptom {} was {} and not {}'.format(
+                print('(Ruling out {} because symptom [{}]{} was {} and not {})'.format(
                         candidate.name, 
                         current_symptom_id,
+                        self.loader.id_to_symptom_name[current_symptom_id],
                         value,
                         candidate.symptom_id_to_severity[current_symptom_id]))
-                print('Symptom: {}'.format(self.loader.id_to_symptom_name[current_symptom_id]))
             
             symptom_idx += 1
                 
