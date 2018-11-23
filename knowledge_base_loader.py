@@ -49,7 +49,7 @@ class KB_loader:
             disorder_name = row_data[0]
             symptoms = row_data[1:]
             disorder = Disorder(disorder_name, disorder_count)
-            disorder.build_symptoms_dict(symptoms, self.id_to_symptom)
+            disorder.build_symptoms_dict(symptoms, self.id_to_symptom_name)
             disorders.append(disorder)
         
         return disorders

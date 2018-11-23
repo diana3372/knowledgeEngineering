@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 
-import random    
+import random
+from knowledge_base_loader import KB_loader
+
+# Load knowledge base
+loader = KB_loader()
 
 # System run
 print('Answer to each question with a Yes(Y) or No(N) according to whether the symptom is present in the patient.\n')
 
 # First shuffle questions
-symptom_question_tuples = list(symptoms_to_questions.items())
+symptom_question_tuples = list(loader.symptom_id_to_question.items())
 random.shuffle(symptom_question_tuples)
 
 n_questions = 5
@@ -31,4 +35,4 @@ for symptom_id, question in symptom_question_tuples:
     if count_questions == n_questions:
         break
     
-print([symptoms_ids[x] for x in present_symptoms])
+print([loader.id_to_symptom_name[x] for x in present_symptoms])
