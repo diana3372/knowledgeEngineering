@@ -30,7 +30,7 @@ class Prune_classifier:
                     continue
                 
                 # Discard this candidate disorder
-                self.candidate_disorders = self.candidate_disorders[:-1]
+                self.candidate_disorders.remove(candidate)
                 print('Ruling out {} because symptom {} was {} and not {}'.format(
                         candidate.name, 
                         current_symptom_id,

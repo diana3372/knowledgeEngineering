@@ -20,7 +20,7 @@ print('Answer to each question with a Yes(Y) or No(N) according to whether the s
 symptom_question_tuples = list(loader.symptom_id_to_question.items())
 random.shuffle(symptom_question_tuples)
 
-n_questions = 10
+n_questions = 70
 count_questions = 0
 
 for symptom_id, question in symptom_question_tuples:
@@ -50,7 +50,8 @@ for symptom_id, question in symptom_question_tuples:
     if count_questions == n_questions:
         break
 
-
+print()
+print('============')
 
 if len(results) == 1:
     print('Anxiety disorder is classified as: {}'.format(results[0].name))    
