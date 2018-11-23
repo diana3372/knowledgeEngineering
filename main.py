@@ -20,7 +20,7 @@ print('Answer to each question with a Yes(Y) or No(N) according to whether the s
 symptom_question_tuples = list(loader.symptom_id_to_question.items())
 random.shuffle(symptom_question_tuples)
 
-n_questions = 20000
+n_questions = 70
 count_questions = 0
 
 for symptom_id, question in symptom_question_tuples:
@@ -39,10 +39,18 @@ for symptom_id, question in symptom_question_tuples:
     else:
         severity = MIN_SEVERITY_VALUE
         
-    classifier.execute(symptom_id, severity)
+    results = classifier.execute(symptom_id, severity)
         
     count_questions += 1
     if count_questions == n_questions:
         break
 
-
+if len(results) == 1:
+    print('Anxiety disorder is classified as: {}'.format(results[0].name))    
+elif len(results) == 0:
+    print('Unable to classify the anxiety disorder')
+else:
+    print('Anxiety disorder type is narrowed down to one of the following:')
+    for r in results:
+        print(r.name)
+    

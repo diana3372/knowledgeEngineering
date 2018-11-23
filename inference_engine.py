@@ -25,7 +25,10 @@ class Prune_classifier:
                 
                 # Discard this candidate disorder
                 candidate_disorders.pop()
-                print('Rulin out {}'.format(candidate.name))
+                print('Ruling out {}'.format(candidate.name))
+                print('Classes left: {}'.format(len(candidate_disorders)))
             
             symptom_idx += 1
+            
+        return candidate_disorders
                 
