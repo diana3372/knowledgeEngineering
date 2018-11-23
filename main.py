@@ -53,6 +53,7 @@ for symptom_id, question in symptom_question_tuples:
 print()
 print('========================================================================')
 print()
+print()
 
 if len(results) == 1:
     print('Anxiety disorder is classified as: {}'.format(results[0].name))    
