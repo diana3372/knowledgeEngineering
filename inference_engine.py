@@ -2,9 +2,11 @@
 # -*- coding: utf-8 -*-
 
 class Prune_classifier:
-    def __init__(self, all_disorders):
+    def __init__(self, all_disorders, loader):
         self.candidate_disorders = all_disorders.copy()
         self.symptoms_so_far = []
+        
+        self.loader = loader
         
     def execute(self, symptom_id, severity):
         self.symptoms_so_far.append((symptom_id, severity))
@@ -14,18 +16,27 @@ class Prune_classifier:
             for candidate_idx in reversed(range(len(self.candidate_disorders))):
                 candidate = self.candidate_disorders[candidate_idx]
                 current_symptom_id, value = self.symptoms_so_far[symptom_idx]
-                # Is exact match
-                if candidate.symptom_id_to_severity[current_symptom_id] == value:
+                expected_value = candidate.symptom_id_to_severity[current_symptom_id]
+                # It is exact match
+                if expected_value == value:
                     continue
                 
-                # Is not an exact match but the symptom is not that severe, so cannot discard
-                if candidate.symptom_id_to_severity[current_symptom_id] == 2:
+                # It is not an exact match but the symptom is not that severe, so cannot discard
+                if abs(expected_value - value) < 4:
+                    continue
+                
+                # Do not rule out because of extra symptoms
+                if value > expected_value:
                     continue
                 
                 # Discard this candidate disorder
-                self.candidate_disorders.pop()
-                print('Ruling out {}'.format(candidate.name))
-                print('Classes left: {}'.format(len(self.candidate_disorders)))
+                self.candidate_disorders = self.candidate_disorders[:-1]
+                print('Ruling out {} because symptom {} was {} and not {}'.format(
+                        candidate.name, 
+                        current_symptom_id,
+                        value,
+                        candidate.symptom_id_to_severity[current_symptom_id]))
+                print('Symptom: {}'.format(self.loader.id_to_symptom_name[current_symptom_id]))
             
             symptom_idx += 1
                 
