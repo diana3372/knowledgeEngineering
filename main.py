@@ -11,7 +11,7 @@ MIN_SEVERITY_VALUE = 0
 loader = KB_loader()
 
 # Initialize inference process
-classifier = Prune_classifier(loader.disorders)
+classifier = Prune_classifier(loader.disorders, loader)
 
 # System run
 print('Answer to each question with a Yes(Y) or No(N) according to whether the symptom is present in the patient.\n')
