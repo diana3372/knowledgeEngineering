@@ -2,9 +2,16 @@
 
 import random
 from knowledge_base_loader import KB_loader
+from inference_engine import Prune_classifier
+
+MAX_SEVERITY_VALUE = 4
+MIN_SEVERITY_VALUE = 0
 
 # Load knowledge base
 loader = KB_loader()
+
+# Initialize inference process
+classifier = Prune_classifier(loader.disorders)
 
 # System run
 print('Answer to each question with a Yes(Y) or No(N) according to whether the symptom is present in the patient.\n')
@@ -13,10 +20,9 @@ print('Answer to each question with a Yes(Y) or No(N) according to whether the s
 symptom_question_tuples = list(loader.symptom_id_to_question.items())
 random.shuffle(symptom_question_tuples)
 
-n_questions = 5
+n_questions = 20000
 count_questions = 0
 
-present_symptoms = []
 for symptom_id, question in symptom_question_tuples:
     print()
     print(question)
@@ -29,10 +35,14 @@ for symptom_id, question in symptom_question_tuples:
             break
     
     if 'y' in answer:
-        present_symptoms.append(symptom_id)
+        severity = MAX_SEVERITY_VALUE
+    else:
+        severity = MIN_SEVERITY_VALUE
+        
+    classifier.execute(symptom_id, severity)
         
     count_questions += 1
     if count_questions == n_questions:
         break
-    
-print([loader.id_to_symptom_name[x] for x in present_symptoms])
+
+
