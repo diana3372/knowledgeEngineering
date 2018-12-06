@@ -66,14 +66,3 @@ class KB_loader:
             symptoms_to_questions[symptom_id] = question
             
         return symptoms_to_questions
-            
-            
-            
-# UT
-#disorder_key = 2
-#disorder = disorders[disorder_key]
-#print(disorder.name)
-#print(disorder.id)
-#symptom_key = 1
-#print(symptoms_ids[symptom_key])
-#print(disorder.symptoms_dict[symptom_key])
