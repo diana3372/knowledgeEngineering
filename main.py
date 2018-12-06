@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import random
+from functools import reduce
+
 from knowledge_base_loader import KB_loader
 from inference_engine import Prune_classifier
 
@@ -17,10 +19,16 @@ classifier = Prune_classifier(loader.disorders, loader)
 print('Answer to each question with a Yes(Y) or No(N) according to whether the symptom is present in the patient.\n')
 
 # First shuffle questions
-symptom_question_tuples = list(loader.symptom_id_to_question.items())
+all_symptom_questions = loader.symptom_id_to_questions.items()
+# Convert list of questions to single question per symptom
+symptom_question_tuples = reduce(lambda x,y: x+y, map(lambda x: [(x[0], s) for s in x[1]], all_symptom_questions))
+
+print(symptom_question_tuples)
+assert False
+
 random.shuffle(symptom_question_tuples)
 
-n_questions = 70
+n_questions = 1000
 count_questions = 0
 
 for symptom_id, question in symptom_question_tuples:

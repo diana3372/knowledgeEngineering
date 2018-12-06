@@ -24,7 +24,7 @@ class KB_loader:
         
         self.id_to_symptom_name = self.load_symptoms(symptoms_ids_file)
         self.disorders = self.load_disorders(disorders_symptoms_file)
-        self.symptom_id_to_question = self.load_questions(symptoms_questions_file)
+        self.symptom_id_to_questions = self.load_questions(symptoms_questions_file)
         
     def load_symptoms(self, symptoms_ids_file):
         symptoms_ids_df = pd.read_csv(symptoms_ids_file, header=None)
@@ -56,13 +56,16 @@ class KB_loader:
     
     def load_questions(self, symptoms_questions_file):
         symptoms_questions_df = pd.read_csv(symptoms_questions_file)
-        # Grab the first question for now
-        symptoms_questions_df = symptoms_questions_df.filter(['Symptom', 'Questions'])
         
-        symptoms_to_questions = {} #dictionary symptom id to question
+        symptoms_to_questions = {} #dictionary symptom id to questions
         for symptom_id, row in enumerate(symptoms_questions_df.iterrows()):
             row_data = row[1]
-            question = row_data[1]
-            symptoms_to_questions[symptom_id] = question
+
+            # Create empty list of questions
+            symptoms_to_questions[symptom_id] = []
+
+            for i, column in enumerate(row_data):
+                if i > 0 and not pd.isnull(column):
+                    symptoms_to_questions[symptom_id].append(column)
             
         return symptoms_to_questions
