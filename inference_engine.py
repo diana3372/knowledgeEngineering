@@ -17,16 +17,8 @@ class Prune_classifier:
                 candidate = self.candidate_disorders[candidate_idx]
                 current_symptom_id, value = self.symptoms_so_far[symptom_idx]
                 expected_value = candidate.symptom_id_to_severity[current_symptom_id]
-                # It is exact match
-                if expected_value == value:
-                    continue
                 
-                # It is not an exact match but the symptom is not that severe, so cannot discard
-                if abs(expected_value - value) < 4:
-                    continue
-                
-                # Do not rule out because of extra symptoms
-                if value > expected_value:
+                if self.match(value, expected_value):
                     continue
                 
                 # Discard this candidate disorder
@@ -37,6 +29,21 @@ class Prune_classifier:
                         self.loader.id_to_symptom_name[current_symptom_id],
                         value,
                         candidate.symptom_id_to_severity[current_symptom_id]))
+                print('{} disorders left'.format(len(self.candidate_disorders)))
             
             symptom_idx += 1
                 
+    def match(self, value, expected_value):
+        # It is exact match
+        if expected_value == value:
+            return True
+        
+        # It is not an exact match but the symptom is not that severe, so cannot discard
+        if abs(expected_value - value) < 4:
+            return True
+        
+        # Do not rule out because of extra symptoms
+        if value > expected_value:
+            return True
+
+        return False
