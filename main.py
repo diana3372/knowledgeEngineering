@@ -25,7 +25,7 @@ symptom_question_tuples = reduce(lambda x,y: x+y, map(lambda x: [(x[0], s) for s
 # Shuffle questions
 random.shuffle(symptom_question_tuples)
 
-n_questions = 1000
+n_questions = 150 #163
 count_questions = 0
 
 for symptom_id, question in symptom_question_tuples:

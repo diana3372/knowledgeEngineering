@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+DEFAULT_DISORDER_ID = 11
+
 class Prune_classifier:
     def __init__(self, all_disorders, loader):
         self.candidate_disorders = all_disorders.copy()
@@ -12,7 +14,7 @@ class Prune_classifier:
         self.symptoms_so_far.append((symptom_id, severity))
                 
         symptom_idx = 0
-        while symptom_idx < len(self.symptoms_so_far) and len(self.candidate_disorders) > 0:
+        while symptom_idx < len(self.symptoms_so_far) and len(self.candidate_disorders) > 1:
             for candidate_idx in reversed(range(len(self.candidate_disorders))):
                 candidate = self.candidate_disorders[candidate_idx]
                 current_symptom_id, value = self.symptoms_so_far[symptom_idx]
@@ -28,10 +30,18 @@ class Prune_classifier:
                         current_symptom_id,
                         self.loader.id_to_symptom_name[current_symptom_id],
                         value,
-                        candidate.symptom_id_to_severity[current_symptom_id]))
+                        expected_value))
                 print('{} disorders left'.format(len(self.candidate_disorders)))
             
+                if len(self.candidate_disorders) == 2 and DEFAULT_DISORDER_ID in [dis.id for dis in self.candidate_disorders]:
+                    if self.candidate_disorders[0].id == DEFAULT_DISORDER_ID:
+                        candidate = self.candidate_disorders[0]
+                    else:
+                        candidate = self.candidate_disorders[1]
+                    self.candidate_disorders.remove(candidate)
+
             symptom_idx += 1
+
                 
     def match(self, value, expected_value):
         # It is exact match
