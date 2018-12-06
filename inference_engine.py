@@ -9,27 +9,27 @@ class Prune_classifier:
         self.symptoms_so_far = []
         
         self.loader = loader
-        
-    def execute(self, symptom_id, severity):
+
+    def execute(self, symptom_id, severity, symptom_id_to_questions_left):
         self.symptoms_so_far.append((symptom_id, severity))
-                
-        symptom_idx = 0
-        while symptom_idx < len(self.symptoms_so_far) and len(self.candidate_disorders) > 1:
+        
+        if len(self.candidate_disorders) > 1:
             for candidate_idx in reversed(range(len(self.candidate_disorders))):
                 candidate = self.candidate_disorders[candidate_idx]
-                current_symptom_id, value = self.symptoms_so_far[symptom_idx]
-                expected_value = candidate.symptom_id_to_severity[current_symptom_id]
+                expected_value = candidate.symptom_id_to_severity[symptom_id]
                 
-                if self.match(value, expected_value):
+                if self.match(severity, expected_value) or symptom_id_to_questions_left[symptom_id] > 0:
+                    if not self.match(severity, expected_value):
+                        print('Not ruling out {} for symptom {}'.format(candidate.name, symptom_id))
                     continue
                 
                 # Discard this candidate disorder
                 self.candidate_disorders.remove(candidate)
                 print('(Ruling out {} because symptom [{}]{} was {} and not {})'.format(
                         candidate.name, 
-                        current_symptom_id,
-                        self.loader.id_to_symptom_name[current_symptom_id],
-                        value,
+                        symptom_id,
+                        self.loader.id_to_symptom_name[symptom_id],
+                        severity,
                         expected_value))
                 print('{} disorders left'.format(len(self.candidate_disorders)))
             
@@ -39,8 +39,6 @@ class Prune_classifier:
                     else:
                         candidate = self.candidate_disorders[1]
                     self.candidate_disorders.remove(candidate)
-
-            symptom_idx += 1
 
                 
     def match(self, value, expected_value):
