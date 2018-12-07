@@ -13,10 +13,11 @@ MIN_SEVERITY_VALUE = 0
 loader = KB_loader()
 
 # Initialize inference process
-classifier = Prune_classifier(loader.disorders, loader)
+classifier = Prune_classifier(loader.disorders)
 
 # System run
-print('Answer to each question with True(T) or False(F) according to whether the symptom is present in the patient.\n')
+print('Answer to each question with a value according to whether the symptom is present in the patient. {} is not present at all, {} is the most severe.\n'.format(
+    MIN_SEVERITY_VALUE, MAX_SEVERITY_VALUE))
 
 all_symptom_questions = loader.symptom_id_to_questions.items()
 # Convert list of questions to single question per symptom
@@ -27,8 +28,6 @@ random.shuffle(symptom_question_tuples)
 
 symptom_id_to_questions_left = {k:len(v) for (k, v) in loader.symptom_id_to_questions.items()}
 
-n_questions = 150 #163
-count_questions = 0
 
 for symptom_id, question in symptom_question_tuples:
     if symptom_id_to_questions_left[symptom_id] == 0:
@@ -37,32 +36,31 @@ for symptom_id, question in symptom_question_tuples:
     print()
     print(question)
     while True:   
-        answer = input('True/False >> ')
-        answer = answer.lower()
-        if answer not in ['true', 'false', 't', 'f', 'yes', 'no', 'y', 'n']:
-            print('Incorrect input. Please answer True or False')
+        answer = input('Severity>> ')
+        if not answer.isdigit() or int(answer) not in range(5):
+            print('Incorrect input. Please input a number from 0 to 4')
         else:
             break
+
+    answer = int(answer)
     
-    if 't' in answer or 'y' in answer:
-        severity = MAX_SEVERITY_VALUE
+    if answer == MAX_SEVERITY_VALUE or answer == MAX_SEVERITY_VALUE - 1:
         # Do not ask repeated questions for the same symptom
+        # if we already know it is strongly present
         symptom_id_to_questions_left[symptom_id] = 0
     else:
-        severity = MIN_SEVERITY_VALUE
         symptom_id_to_questions_left[symptom_id] -= 1
         
-    classifier.execute(symptom_id, severity, symptom_id_to_questions_left)
+    # Run inference
+    classifier.execute(symptom_id, answer, symptom_id_to_questions_left)
     
     results = classifier.candidate_disorders
+
+    # Break if we already ruled out enough
     if len(results) == 0:
         results = [loader.disorders[-1]]
         break
     elif len(results) == 1:
-        break
-        
-    count_questions += 1
-    if count_questions == n_questions:
         break
 
 print()
