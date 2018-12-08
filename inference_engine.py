@@ -5,7 +5,8 @@ class Prune_classifier:
     def __init__(self, all_disorders):
         self.candidate_disorders = all_disorders.copy()
 
-    def execute(self, symptom_id, severity, symptom_id_to_questions_left):        
+    def execute(self, symptom_id, severity, symptom_id_to_questions_left):
+        # Control structure for a pruning classifier    
         if len(self.candidate_disorders) > 1:
             for candidate_idx in reversed(range(len(self.candidate_disorders))):
                 candidate = self.candidate_disorders[candidate_idx]
